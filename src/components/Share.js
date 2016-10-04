@@ -1,5 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router';
 
-const Share = () => <p>share</p>;
+const Share = (props) => <Link to={`/poll/${props.params.pollId}`}>{props.params.pollId}</Link>;
 
 export default Share;

@@ -1,5 +1,17 @@
 import React from 'react';
+import { Link } from 'react-router';
 
-const Dashboard = () => <p>Dashboiard</p>;
+class Dashboard extends React.Component {
+
+    render() {
+        return (
+            <div>
+                <Link to="/new">New</Link><br />
+                
+            </div>
+        );
+    }
+}
+
 
 export default Dashboard;

@@ -24,8 +24,8 @@ ReactDOM.render(
       <Route path="recover" component={Recover} onEnter={redirectToDashboard} />
       <Route path="dashboard" component={Dashboard} onEnter={requireAuth} /> 
       <Route path="new" component={New} onEnter={requireAuth} />
-      <Route path="share" component={Share} onEnter={requireAuth} />
-      <Route path="poll" component={Poll} />
+      <Route path="share/:pollId" component={Share} onEnter={requireAuth} />
+      <Route path="poll/:pollId" component={Poll} />
     </Route>
   </Router>,
   document.getElementById('root')
