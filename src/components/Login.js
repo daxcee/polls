@@ -1,12 +1,13 @@
+/*global componentHandler*/
+
 import React from 'react';
 import firebaseApp from '../utils/firebase';
-import * as firebase from 'firebase';
-import { Link } from 'react-router';
+import { browserHistory } from 'react-router';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { email: '', password: ''};
+    this.state = { email: '', password: '' };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -26,55 +27,58 @@ class Login extends React.Component {
     const email = this.state.email.trim();
     const password = this.state.password.trim();
 
-    firebaseApp.auth().signInWithEmailAndPassword(email, password).catch((error) => {
-    		// Handle Errors here.
-    		alert(`Opps ... ${error.message}`);
-    });
-  }
-
-  handleFacebook(e) {
-    e.preventDefault();
-    const provider = new firebase.auth.FacebookAuthProvider();
-    firebaseApp.auth().signInWithPopup(provider).then((result) => {
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      // var token = result.credential.accessToken;
-      // The signed-in user info.
-      //var user = result.user;
-      console.log('Facebook login success')
+    firebaseApp.auth().signInWithEmailAndPassword(email, password).then((user) => {
+      browserHistory.push('/dashboard');
     }).catch((error) => {
-      alert(`Facebook sign in error: ${error.message}`);
-    });
+      document.getElementById('errorMessage').innerText = error.message;
+      console.log(error);
+    });;
   }
 
-   handleGoogle(e) {
-    e.preventDefault();
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebaseApp.auth().signInWithPopup(provider).then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      //var token = result.credential.accessToken;
-      // The signed-in user info.
-      //var user = result.user;
-      console.log('Google login success')
-    }).catch((error) => {
-      alert(`Google sign in error: ${error.message}`);
-    });
+  componentDidUpdate() {
+    componentHandler.upgradeDom();
   }
-
 
   render() {
     return (
-      <div>
-        <p>Login</p>
-        <button onClick={this.handleFacebook}>Login with Facebook</button><br />
-        <button onClick={this.handleGoogle}>Login with Google</button><br />
-        <p>Or Login with Email</p>
-        <form onSubmit={this.handleSubmit}>
-          	<input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="Enter Email" />
-          	<input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Enter Password" /><br/>
-          	<button type="submit">Submit</button>
-        </form> 
-        <Link to="/signup">Signup</Link><br />
-        <Link to="recover">Passwprd Recovery</Link>
+      <div className="mdl-grid" style={{ maxWidth: 800 }}>
+        <div className="mdl-cell mdl-cell--12-col center">
+
+          <h1><a href="/">Polls</a></h1>
+
+
+          <p id="errorMessage"></p>
+
+          <form onSubmit={this.handleSubmit}>
+
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input className="mdl-textfield__input" type="text" id="emailInput" value={this.state.email} onChange={this.handleEmailChange} />
+              <label className="mdl-textfield__label" htmlFor="emailInput">Email</label>
+            </div>
+
+            <br />
+
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input className="mdl-textfield__input" type="password" id="passwordInput" value={this.state.password} onChange={this.handlePasswordChange} />
+              <label className="mdl-textfield__label" htmlFor="passwordInput">Password</label>
+            </div>
+
+
+
+            <p>
+              <button
+                type="submit"
+                className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent homeButton">
+                Login
+              </button>
+            </p>
+
+          </form>
+
+          <a className="mdl-button mdl-js-button" href="https://github.com/sebnun/polls" ><i className="fa fa-github" aria-hidden="true"></i> Source Code</a>
+
+        </div>
+
       </div>
     );
   }

@@ -1,10 +1,11 @@
 import React from 'react';
 import firebaseApp from '../utils/firebase';
+import { browserHistory } from 'react-router';
 
 class Signup extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { email: '', password: ''};
+    this.state = { email: '', password: '' };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -24,21 +25,51 @@ class Signup extends React.Component {
     const email = this.state.email.trim();
     const password = this.state.password.trim();
 
-    firebaseApp.auth().createUserWithEmailAndPassword(email, password).catch((error) => {
-    	// Handle Errors here.
-    	alert(`Opps ... ${error.message}`);
+    firebaseApp.auth().createUserWithEmailAndPassword(email, password).then((user) => {
+      browserHistory.push('/dashboard');
+    }).catch((error) => {
+      document.getElementById('errorMessage').innerText = error.message;
+      console.log(error);
     });
   }
 
   render() {
     return (
-      <div>
-        <p>Signup</p>
-        <form onSubmit={this.handleSubmit}>
-          	<input type="text" value={this.state.email} onChange={this.handleEmailChange} placeholder="Enter Email" />
-          	<input type="password" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Enter Password" /><br/>
-          	<button type="submit">Submit</button>
-        </form> 
+      <div className="mdl-grid" style={{ maxWidth: 800 }}>
+        <div className="mdl-cell mdl-cell--12-col center">
+
+          <h1><a href="/">Polls</a></h1>
+
+
+          <p id="errorMessage"></p>
+
+          <form onSubmit={this.handleSubmit}>
+
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input className="mdl-textfield__input" type="text" id="emailInput" value={this.state.email} onChange={this.handleEmailChange} />
+              <label className="mdl-textfield__label" htmlFor="emailInput">Email</label>
+            </div>
+
+            <br />
+
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input className="mdl-textfield__input" type="password" id="passwordInput" value={this.state.password} onChange={this.handlePasswordChange} />
+              <label className="mdl-textfield__label" htmlFor="passwordInput">Password</label>
+            </div>
+
+            <p>
+              <button
+                type="submit"
+                className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent homeButton">
+                Sign Up
+              </button>
+            </p>
+
+          </form>
+
+          <a className="mdl-button mdl-js-button" href="https://github.com/sebnun/polls" ><i className="fa fa-github" aria-hidden="true"></i> Source Code</a>
+
+        </div>
       </div>
     );
   }

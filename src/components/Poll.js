@@ -1,5 +1,6 @@
 import React from 'react';
 import firebaseApp from '../utils/firebase';
+import Bar from './Bar';
 
 class Poll extends React.Component {
     constructor(props) {
@@ -16,15 +17,16 @@ class Poll extends React.Component {
 		
         poll.on('value', ((snapshot) => {
 		  this.setState({ option1Count: snapshot.option1Count, option2Count: snapshot.option2Count });
-          console.log(this.state);
+          //console.log(this.state);
         }));
     }
 
     render() {
         return (
             <div>
-                <p>op 1: {this.state.option1Count}</p>
-                <p>op 2: {this.state.option2Count}</p>
+                <Bar />
+                {/*<p>op 1: {this.state.option1Count}</p>
+                <p>op 2: {this.state.option2Count}</p>*/}
             </div>
         );
     }

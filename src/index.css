@@ -1,5 +1,9 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+button.homeButton {
+  width: 300px;
+}
+.center {
+  text-align: center;
+}
+.right {
+  text-align: right;
 }
