@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 // import FontIcon from 'material-ui/FontIcon';
 import Dialog from 'material-ui/Dialog';
+//import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 class Dashboard extends React.Component {
 
@@ -16,9 +17,7 @@ class Dashboard extends React.Component {
         this.state = {
             dialogOpen: false,
             poll2Delete: '',
-            polls: [
-                { title: 'test title', id: '1261256' }
-            ],
+            polls: [],
             loading: true
         };
 
@@ -29,23 +28,46 @@ class Dashboard extends React.Component {
 
     componentWillMount() {
 
+        let uid;
+
         //this key exists if the user is logged in, when logged out is removed
         //the user should be authoraized when seeing the dashboard
         //use it to avoid waiting for firebaseApp.auth().onAuthStateChanged
-
-        let uid;
-
         for (let key in localStorage) {
-            if (key.startsWith("firebase:authUser:")) {
+            if (key.startsWith('firebase:authUser:')) {
                 uid = JSON.parse(localStorage.getItem(key)).uid;
             }
         }
 
-        const userPolls = firebaseApp.database().ref('user-polls/' + uid);
-		
-        userPolls.on('value', ((snapshot) => {
-		  //this.setState({ 
-          console.log(snapshot.val());
+
+
+        const userPollsRef = firebaseApp.database().ref(`user-polls/${uid}`);
+        userPollsRef.on('value', ((userPollsSnapshot) => {
+
+            let polls = [];
+            let _this = this;
+
+            //set here, cause if no polls remain after last delete, the pollRef wont get called
+            _this.setState({ polls: polls, loading: false });
+
+
+            userPollsSnapshot.forEach((pollIdSnap) => {
+
+                const pollId = pollIdSnap.key;
+
+                const pollRef = firebaseApp.database().ref(`polls/${pollId}`);
+                pollRef.on('value', ((snapshot) => {
+
+                    //snapshop can be null after deleting
+                    if (snapshot.val()) {
+                        polls.push({ title: snapshot.val().title, id: pollId });
+                        _this.setState({ polls: polls });
+                    }
+
+                }));
+
+            });
+
         }));
     }
 
@@ -58,7 +80,14 @@ class Dashboard extends React.Component {
     }
 
     handleDelete() {
-        console.log('delte ' + this.state.poll2Delete);
+
+        // update to null to delete
+        var updates = {};
+        updates['/polls/' + this.state.poll2Delete] = null;
+        updates['/user-polls/' + firebaseApp.auth().currentUser.uid + '/' + this.state.poll2Delete] = null;
+
+        firebaseApp.database().ref().update(updates);
+
         this.setState({ dialogOpen: false, poll2Delete: '' });
     }
 
@@ -69,50 +98,56 @@ class Dashboard extends React.Component {
                 label="Cancel"
                 primary={true}
                 onTouchTap={this.handleClose}
-            />,
+                />,
             <FlatButton
                 label="Delete"
                 primary={true}
                 onTouchTap={this.handleDelete}
-            />,
+                />,
         ];
 
+        let pollsUIs = this.state.polls.map((poll) => {
+            return (
+                <p key={poll.id}>
+                    <Link to={`/poll/${poll.id}/share`}>{poll.title}</Link>
+                    <IconButton
+                        iconClassName="fa fa-trash"
+                        tooltip={<span>Delete</span>}
+                        onTouchTap={() => this.handleOpen(poll.id) }
+                        />
+                </p>
+            );
+        });
+
         return (
-           
- 
+
+
             <div className="row">
-                <div className="col-sm-12 text-xs-center">      
+                <div className="col-sm-12 text-xs-center">
 
                     <h3>Your Polls</h3>
 
-                    <div className="text-xs-left">
-
-                        <Dialog
-                            actions={actions}
-                            modal={false}
-                            open={this.state.dialogOpen}
-                            onRequestClose={this.handleClose}
-                            >
-                            Delete Poll?
-                        </Dialog>
+                    <Dialog
+                        actions={actions}
+                        modal={false}
+                        open={this.state.dialogOpen}
+                        onRequestClose={this.handleClose}
+                    >
+                        Delete Poll?
+                    </Dialog>
 
 
-                        <RaisedButton
-                            label="New Poll"
-                            href="/new"
-                            primary={true}
+                    <RaisedButton
+                        label="New Poll"
+                        href="/new"
+                        primary={true}
                         />
 
-                        <p key={23498723}>
-                            <Link to="/poll/23498723/share">Coke vs POeso</Link> 
-                            <IconButton 
-                                iconClassName="fa fa-trash" 
-                                tooltip={<span>Delete</span>}
-                                onTouchTap={() => this.handleOpen(23498723)}
-                            />
-                        </p>
+                    { this.state.loading ? <p>Loading ...</p> : '' }
 
-                    </div>
+                    {pollsUIs}
+
+
                 </div>
             </div>
         );
