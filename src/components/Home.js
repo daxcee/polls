@@ -3,6 +3,9 @@ import firebaseApp from '../utils/firebase';
 import * as firebase from 'firebase'; //needed for fb, google providers
 import { browserHistory } from 'react-router';
 
+import RaisedButton from 'material-ui/RaisedButton';
+import FontIcon from 'material-ui/FontIcon';
+
 class Home extends React.Component {
 
   handleFacebook(e) {
@@ -24,10 +27,6 @@ class Home extends React.Component {
     e.preventDefault();
     const provider = new firebase.auth.GoogleAuthProvider();
     firebaseApp.auth().signInWithPopup(provider).then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      //var token = result.credential.accessToken;
-      // The signed-in user info.
-      //var user = result.user;
       console.log('Google login success');
       browserHistory.push('/dashboard');
     }).catch((error) => {
@@ -35,61 +34,54 @@ class Home extends React.Component {
     });
   }
 
-  handleEmail(e) {
-    browserHistory.push('/login');
-  }
-
-  handleSignup(e) {
-    browserHistory.push('/signup');
-  }
-
   render() {
     return (
 
-      <div className="mdl-grid" style={{ maxWidth: 800 }}>
-        <div className="mdl-cell mdl-cell--12-col center">
+        <div className="row">
+          <div className="col-sm-12 text-xs-center">
 
-          <h1><a href="/">Polls</a></h1>
+            <h1 className="display-1"><a href="/">Polls</a></h1>
 
-          <h2>Create, share and vote on polls fast and easy.View Results in real time!</h2>
+            <h4 className="display-4">Create, share and vote on polls fast and easy.View Results in real time!</h4>
 
-          <p>
-            <button
-              className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored homeButton"
-              onClick={this.handleFacebook}>
-              <i className="fa fa-facebook-f" aria-hidden="true"></i>
-              &nbsp; Login with Facebook
-            </button>
-          </p>
-          <p>
-            <button
-              className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored homeButton"
-              onClick={this.handleGoogle}>
-              <i className="fa fa-google" aria-hidden="true"></i>
-              &nbsp; Login with Google
-            </button>
-          </p>
-          <p>
-            <button
-              className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored homeButton"
-              onClick={this.handleEmail}>
-              Login with Email
-            </button>
-          </p>
-          <p>
-            <button
-              className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent homeButton"
-              onClick={this.handleSignup}>
-              Sign Up
-            </button>
-          </p>
+            <br /><br/>
+            <RaisedButton
+              label="Login with Facebook"
+              onTouchTap={this.handleFacebook}
+              secondary={true}
+              icon={<FontIcon className="fa fa-facebook-f" />}
+              className="buttonWidth"
+              />
 
+            <br /><br/>
+            <RaisedButton
+              label="Login with Google"
+              onTouchTap={this.handleGoogle}
+              secondary={true}
+              icon={<FontIcon className="fa fa-google" />}
+              className="buttonWidth"
+              />
 
-          <a className="mdl-button mdl-js-button" href="https://github.com/sebnun/polls" ><i className="fa fa-github" aria-hidden="true"></i> Source Code</a>
+            <br /><br/>
+            <RaisedButton
+              label="Login with Email"
+              href="/login"
+              secondary={true}
+              icon={<FontIcon className="fa fa-envelope-o" />}
+              className="buttonWidth"
+              />
 
+            <br /><br/>
+            <RaisedButton
+              label="Sign Up"
+              href="/signup"
+              primary={true}
+              className="buttonWidth"
+              />
 
+          </div>
         </div>
-      </div>
+    
     );
   }
 }

@@ -1,13 +1,20 @@
-/*global componentHandler*/
-
 import React from 'react';
 import firebaseApp from '../utils/firebase';
 import { browserHistory } from 'react-router';
 
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { email: '', password: '' };
+    this.state = {
+      email: '',
+      password: '',
+      emailError: '',
+      passwordError: ''
+    };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -28,58 +35,63 @@ class Login extends React.Component {
     const password = this.state.password.trim();
 
     firebaseApp.auth().signInWithEmailAndPassword(email, password).then((user) => {
-      browserHistory.push('/dashboard');
+      browserHistory.push('/dashboard'); 
     }).catch((error) => {
-      document.getElementById('errorMessage').innerText = error.message;
+
+      if (error.code === 'auth/wrong-password') {
+        this.setState({ passwordError: error.message, emailError: '' });
+      } else {
+        this.setState({ emailError: error.message, passwordError: '' });
+      }
+
       console.log(error);
     });;
   }
 
-  componentDidUpdate() {
-    componentHandler.upgradeDom();
-  }
-
   render() {
     return (
-      <div className="mdl-grid" style={{ maxWidth: 800 }}>
-        <div className="mdl-cell mdl-cell--12-col center">
 
-          <h1><a href="/">Polls</a></h1>
+        <div className="row">
+          <div className="col-sm-12 text-xs-center">
 
+            <h1 className="display-1"><a href="/">Polls</a></h1>
 
-          <p id="errorMessage"></p>
+            <form onSubmit={this.handleSubmit}>
 
-          <form onSubmit={this.handleSubmit}>
+              <TextField
+                floatingLabelText="Email"
+                value={this.state.email}
+                onChange={this.handleEmailChange}
+                errorText={this.state.emailError}
+                />
 
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input className="mdl-textfield__input" type="text" id="emailInput" value={this.state.email} onChange={this.handleEmailChange} />
-              <label className="mdl-textfield__label" htmlFor="emailInput">Email</label>
-            </div>
+              <br /><br />
+              <TextField
+                floatingLabelText="Password"
+                value={this.state.password}
+                onChange={this.handlePasswordChange}
+                type="password"
+                errorText={this.state.passwordError}
+                />
+
+              <br /><br/>
+              <RaisedButton
+                label="Login"
+                type="submit"
+                primary={true}
+                className="buttonWidth"
+                />
+
+            </form>
 
             <br />
-
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input className="mdl-textfield__input" type="password" id="passwordInput" value={this.state.password} onChange={this.handlePasswordChange} />
-              <label className="mdl-textfield__label" htmlFor="passwordInput">Password</label>
-            </div>
-
-
-
-            <p>
-              <button
-                type="submit"
-                className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent homeButton">
-                Login
-              </button>
-            </p>
-
-          </form>
-
-          <a className="mdl-button mdl-js-button" href="https://github.com/sebnun/polls" ><i className="fa fa-github" aria-hidden="true"></i> Source Code</a>
-
+            <FlatButton
+              label="Forgot your password?"
+              href="/recover"
+              />
+          </div>
         </div>
-
-      </div>
+      
     );
   }
 }
