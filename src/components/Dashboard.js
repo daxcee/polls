@@ -39,8 +39,6 @@ class Dashboard extends React.Component {
             }
         }
 
-
-
         const userPollsRef = firebaseApp.database().ref(`user-polls/${uid}`);
         userPollsRef.on('value', ((userPollsSnapshot) => {
 
@@ -49,7 +47,6 @@ class Dashboard extends React.Component {
 
             //set here, cause if no polls remain after last delete, the pollRef wont get called
             _this.setState({ polls: polls, loading: false });
-
 
             userPollsSnapshot.forEach((pollIdSnap) => {
 
@@ -109,7 +106,7 @@ class Dashboard extends React.Component {
         let pollsUIs = this.state.polls.map((poll) => {
             return (
                 <p key={poll.id}>
-                    <Link to={`/poll/${poll.id}/share`}>{poll.title}</Link>
+                    <Link to={`/poll/${poll.id}`}>{poll.title}</Link>
                     <IconButton
                         iconClassName="fa fa-trash"
                         tooltip={<span>Delete</span>}

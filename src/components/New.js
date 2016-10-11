@@ -70,7 +70,7 @@ class New extends React.Component {
 
         firebaseApp.database().ref().update(updates);
     
-        browserHistory.push(`/poll/${newPollKey}/share`);
+        browserHistory.push(`/poll/${newPollKey}`);
     }
 
     handleAddOption() {
@@ -137,7 +137,9 @@ class New extends React.Component {
     }
 
     //firebase keys must be non-empty strings and can't contain ".", "#", "$", "/", "[", or "]"
-    //validates and sanitizes this.state for firebase insert
+    //option must not be named "title", TODO: better data structure in firebase
+    //options must be different, firebase removes dups keys automatically
+    //more robust validation is done firebase-side
     formIsInvalid() {
 
         let isInvalid = false;
@@ -157,7 +159,7 @@ class New extends React.Component {
         this.state.options.forEach((o, i) => {
 
             let options = this.state.options;
-            const thisOption = o.option.trim();
+            let thisOption = o.option.trim();
 
             if (thisOption.length === 0) {
                 options[i] = { option: thisOption, optionError: 'This option must not be empty.' }
@@ -168,6 +170,11 @@ class New extends React.Component {
                 this.setState({ options: options });
                 isInvalid = true;
             } else {
+
+                if (thisOption === 'title') { //can't have option with key "title"
+                    thisOption = 'Title';
+                }
+
                 options[i] = { option: thisOption, optionError: '' }
                 this.setState({ options: options });
             }

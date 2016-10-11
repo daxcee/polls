@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Recover from './components/Recover';
 import New from './components/New';
 import Poll from './components/Poll';
+import Update from './components/Update';
 
 import './index.css';
 
@@ -28,7 +29,8 @@ ReactDOM.render(
       <Route path="login" component={Login} />
       <Route path="recover" component={Recover} />
       <Route path="new" component={New} onEnter={requireAuth} />
-      <Route path="poll/:pollId/:share" component={Poll} />
+      <Route path="update/:pollId" component={Update} onEnter={requireAuth} />
+      <Route path="poll/:pollId" component={Poll} />
     </Route>
   </Router>,
   document.getElementById('root')

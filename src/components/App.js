@@ -49,10 +49,10 @@ class App extends React.Component {
             nav = (
                 <div className="row">
                     <div className="col-sm-6">
-                        <h5 className="display-5 logo"><a href="/dashboard">Polls</a></h5>
+                        <h5 className="display-5 logo"><a href="/dashboard">dashboard</a></h5>
                     </div>
                     <div className="col-sm-6 text-xs-right">
-                        {firebaseApp.auth().currentUser.email}
+                        {firebaseApp.auth().currentUser ? firebaseApp.auth().currentUser.email : '' }
                         <FlatButton 
                             onClick={this.handleLogout}
                             label="Logout"
