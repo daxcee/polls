@@ -1,12 +1,15 @@
 body {
   font-family: 'Roboto', sans-serif;
+  background-color: #FCFCFC;
 }
 
-.logo, .display-1 {
-  font-family: 'Permanent marker', sans-serif;
+h2{
+  /*font-style: italic;*/
+  padding-left: 20px;
+  padding-right: 20px;
 }
-
 .buttonWidth {
-  width: 300px;
+  width: 250px;
 }
+
 

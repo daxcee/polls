@@ -3,6 +3,9 @@ import firebaseApp from '../utils/firebase';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
+import Helmet from "react-helmet";
+
 
 class Recover extends React.Component {
   constructor(props) {
@@ -39,7 +42,7 @@ class Recover extends React.Component {
       let step = (
           <form onSubmit={this.handleEmailSubmit}>
 
-            <p>We'll send you an email to reset your password.</p>
+            <h2>We'll send you an email to reset your password.</h2>
 
               <TextField
                 floatingLabelText="Email"
@@ -53,7 +56,6 @@ class Recover extends React.Component {
                 label="Send Verification Email"
                 type="submit"
                 primary={true}
-                className="buttonWidth"
                 />
 
             </form>
@@ -70,10 +72,13 @@ class Recover extends React.Component {
         <div className="row">
           <div className="col-sm-12 text-xs-center">
 
-            <h1 className="display-1"><a href="/">Polls</a></h1>
+            <Helmet title="Reset yout password" /> 
 
+<Paper>
+           <br /><br />
             {step}
-
+            <br /><br />
+</Paper>
           </div>
         </div>
     );

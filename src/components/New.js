@@ -6,6 +6,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Paper from 'material-ui/Paper';
+import Helmet from "react-helmet";
 
 class New extends React.Component {
     constructor(props) {
@@ -99,8 +101,12 @@ class New extends React.Component {
 
         return (
             <div className="row">
-                <div className="col-sm-12 text-xs-center">      
+                <div className="col-sm-12 text-xs-center"> 
 
+                    <Helmet title="New Poll" />     
+
+                    <Paper>
+                    <br /><br />
                     <h3>New Poll</h3>
 
                     <form onSubmit={this.handleSubmit}>
@@ -127,10 +133,11 @@ class New extends React.Component {
                             label="Create"
                             type="submit"
                             primary={true}
-                            className="buttonWidth"
                         />
                     </form> 
 
+                    <br /><br />
+                    </Paper>
                 </div>
             </div>
         );

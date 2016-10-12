@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router';
 import firebaseApp from '../utils/firebase';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -7,7 +6,10 @@ import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 // import FontIcon from 'material-ui/FontIcon';
 import Dialog from 'material-ui/Dialog';
+import Paper from 'material-ui/Paper';
+import Divider from 'material-ui/Divider';
 //import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Helmet from "react-helmet";
 
 class Dashboard extends React.Component {
 
@@ -105,14 +107,23 @@ class Dashboard extends React.Component {
 
         let pollsUIs = this.state.polls.map((poll) => {
             return (
-                <p key={poll.id}>
-                    <Link to={`/poll/${poll.id}`}>{poll.title}</Link>
+                <div key={poll.id} >
+
                     <IconButton
                         iconClassName="fa fa-trash"
                         tooltip={<span>Delete</span>}
                         onTouchTap={() => this.handleOpen(poll.id) }
-                        />
-                </p>
+                        
+                    />
+                    <FlatButton
+                        label={poll.title}
+                        href={`/poll/${poll.id}`}
+                        className="pollDashboard"
+                        style={{textAlign: 'left', width: '50%'}}
+                    />
+                    <Divider />
+                    
+                </div>
             );
         });
 
@@ -122,8 +133,14 @@ class Dashboard extends React.Component {
             <div className="row">
                 <div className="col-sm-12 text-xs-center">
 
-                    <h3>Your Polls</h3>
+                    <Helmet title="Dashboard" />
 
+                    <Paper>
+
+                    <br/>
+                    <h2>Your Polls</h2>
+                    <br />
+                    
                     <Dialog
                         actions={actions}
                         modal={false}
@@ -144,7 +161,7 @@ class Dashboard extends React.Component {
 
                     {pollsUIs}
 
-
+                    </Paper>
                 </div>
             </div>
         );

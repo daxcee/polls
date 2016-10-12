@@ -5,7 +5,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Paper from 'material-ui/Paper';
 import { PieChart, Pie, Tooltip } from 'recharts';
+import Helmet from "react-helmet";
 
 class Poll extends React.Component {
     constructor(props) {
@@ -14,7 +16,8 @@ class Poll extends React.Component {
         this.state = {
             title: '',
             options: [], //of the form [{'some option': 34}]
-            voted: localStorage.getItem('voted') ? true : false
+            voted: localStorage.getItem(this.props.params.pollId) ? true : false,
+            showSnackbar: false
         };
 
         //this.handleVote = this.handleVote
@@ -46,8 +49,8 @@ class Poll extends React.Component {
         })[0][option];
 
         firebaseApp.database().ref().update({ [`polls/${this.props.params.pollId}/${option}`]: currentCount += 1 })
-        localStorage.setItem('voted', 'true');
-        this.setState({ voted: true });
+        localStorage.setItem(this.props.params.pollId, 'true');
+        this.setState({ voted: true, showSnackbar: true });
     }
 
     render() {
@@ -97,13 +100,16 @@ class Poll extends React.Component {
             <div className="row">
                 <div className="col-sm-12 text-xs-center">
 
+                    <Helmet title={this.state.title} /> 
+
                     <Snackbar
-                        open={this.state.voted}
+                        open={this.state.showSnackbar}
                         message="Thanks for your vote!"
                         autoHideDuration={4000}
                     />
-
-                    <h3>{this.state.title}</h3>
+<Paper>
+<br /><br />
+                    <h2>{this.state.title}</h2>
 
                     {optionsUI}
 
@@ -113,7 +119,9 @@ class Poll extends React.Component {
                         <Pie isAnimationActive={false} data={data} cx={200} cy={200} outerRadius={80} fill="#8884d8" label/>
                         <Tooltip/>
                     </PieChart>
-                    
+
+                    <br /><br />
+                    </Paper>
                 </div>
             </div>
         );

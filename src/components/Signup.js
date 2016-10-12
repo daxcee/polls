@@ -4,6 +4,8 @@ import { browserHistory } from 'react-router';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
+import Helmet from "react-helmet";
 
 class Signup extends React.Component {
   constructor(props) {
@@ -50,8 +52,12 @@ class Signup extends React.Component {
         <div className="row">
           <div className="col-sm-12 text-xs-center">
 
-          <h1 className="display-1"><a href="/">Polls</a></h1>
-          
+          <Helmet title="Signup" /> 
+
+<Paper>
+<br /><br />
+          <h2>Signup</h2>
+
           <form onSubmit={this.handleSubmit}>
 
             <TextField
@@ -76,11 +82,11 @@ class Signup extends React.Component {
                 label="Signup"
                 type="submit"
                 primary={true}
-                className="buttonWidth"
               />
 
           </form>
-
+          <br /><br />
+</Paper>
           </div>
         </div>
 

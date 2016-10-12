@@ -5,6 +5,8 @@ import { browserHistory } from 'react-router';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
+import Paper from 'material-ui/Paper';
+import Helmet from "react-helmet";
 
 class Home extends React.Component {
 
@@ -40,44 +42,50 @@ class Home extends React.Component {
         <div className="row">
           <div className="col-sm-12 text-xs-center">
 
-            <h1 className="display-1"><a href="/">Polls</a></h1>
+            <Helmet title="Home" />
 
-            <h4 className="display-4">Create, share and vote on polls fast and easy.View Results in real time!</h4>
+            <Paper>
 
-            <br /><br/>
-            <RaisedButton
-              label="Login with Facebook"
-              onTouchTap={this.handleFacebook}
-              secondary={true}
-              icon={<FontIcon className="fa fa-facebook-f" />}
-              className="buttonWidth"
-              />
+              <br /><br />
+              <h2>Create and share polls, fast and easy. View results in real time!</h2>
 
-            <br /><br/>
-            <RaisedButton
-              label="Login with Google"
-              onTouchTap={this.handleGoogle}
-              secondary={true}
-              icon={<FontIcon className="fa fa-google" />}
-              className="buttonWidth"
-              />
+              <br /><br/>
+              <RaisedButton
+                label="Login with Facebook"
+                onTouchTap={this.handleFacebook}
+                secondary={true}
+                icon={<FontIcon className="fa fa-facebook-f" />}
+                className="buttonWidth"
+                />
 
-            <br /><br/>
-            <RaisedButton
-              label="Login with Email"
-              href="/login"
-              secondary={true}
-              icon={<FontIcon className="fa fa-envelope-o" />}
-              className="buttonWidth"
-              />
+              <br /><br/>
+              <RaisedButton
+                label="Login with Google"
+                onTouchTap={this.handleGoogle}
+                secondary={true}
+                icon={<FontIcon className="fa fa-google" />}
+                className="buttonWidth"
+                />
 
-            <br /><br/>
-            <RaisedButton
-              label="Sign Up"
-              href="/signup"
-              primary={true}
-              className="buttonWidth"
-              />
+              <br /><br/>
+              <RaisedButton
+                label="Login with Email"
+                href="/login"
+                secondary={true}
+                icon={<FontIcon className="fa fa-envelope-o" />}
+                className="buttonWidth"
+                />
+
+              <br /><br/>
+              <RaisedButton
+                label="Sign Up"
+                href="/signup"
+                primary={true}
+                className="buttonWidth"
+                />
+                <br /><br/>
+                <br /><br/>
+            </Paper>
 
           </div>
         </div>

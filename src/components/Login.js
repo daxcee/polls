@@ -5,6 +5,8 @@ import { browserHistory } from 'react-router';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
+import Helmet from "react-helmet";
 
 class Login extends React.Component {
   constructor(props) {
@@ -54,10 +56,13 @@ class Login extends React.Component {
         <div className="row">
           <div className="col-sm-12 text-xs-center">
 
-            <h1 className="display-1"><a href="/">Polls</a></h1>
+            <Helmet title="Login" />
+
+            <Paper>
 
             <form onSubmit={this.handleSubmit}>
 
+              <br /><br />
               <TextField
                 floatingLabelText="Email"
                 value={this.state.email}
@@ -79,7 +84,6 @@ class Login extends React.Component {
                 label="Login"
                 type="submit"
                 primary={true}
-                className="buttonWidth"
                 />
 
             </form>
@@ -89,6 +93,8 @@ class Login extends React.Component {
               label="Forgot your password?"
               href="/recover"
               />
+              <br /><br />
+              </Paper>
           </div>
         </div>
       
