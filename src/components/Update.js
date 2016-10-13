@@ -1,14 +1,13 @@
 import React from 'react';
-import firebaseApp from '../utils/firebase';
+import { firebaseApp } from '../utils/firebase';
 import { browserHistory } from 'react-router';
+import Helmet from "react-helmet";
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
-import Helmet from "react-helmet";
-
 import Loading from './Loading';
 
 class Update extends React.Component {
@@ -29,14 +28,11 @@ class Update extends React.Component {
 
     componentWillMount() {
 
-        const pollRef = firebaseApp.database().ref(`polls/${this.props.params.pollId}`);
-        pollRef.on('value', ((snapshot) => {
-
-            const _this = this;
+        this.pollRef = firebaseApp.database().ref(`polls/${this.props.params.pollId}`);
+        this.pollRef.on('value', ((snapshot) => {
             const dbPoll = snapshot.val();
 
             const options = Object.keys(dbPoll).reduce((a, key) => {
-
                 if (key !== 'title') {
                     a.push({ option: [key], optionError: '' }); //[key]is es6 computed property name
                 }
@@ -46,14 +42,15 @@ class Update extends React.Component {
             //to start with a new option
             options.push({ option: '', optionError: '' });
 
-            _this.setState({ title: dbPoll.title, options: options, originalCount: options.length - 1, loading: false })
+            this.setState({ title: dbPoll.title, options: options, originalCount: options.length - 1, loading: false })
+        })).bind(this);
+    }
 
-        }));
-
+    componentWillUnmount() {
+        this.pollRef.off();
     }
 
     handleOptionChange(i, e) {
-
         let options = this.state.options;
         options[i].option = e.target.value;
         this.setState({ options: options });
@@ -71,11 +68,10 @@ class Update extends React.Component {
                 const key = op.option.trim();
                 a.push(key);
             }
-
             return a;
         }, [])
 
-        var updates = {};
+        const updates = {};
 
         newOptionsArray.forEach(option => {
             updates[`polls/${this.props.params.pollId}/${option}`] = 0;
@@ -87,7 +83,6 @@ class Update extends React.Component {
     }
 
     handleAddOption() {
-
         let options = this.state.options;
         options.push({ option: '', optionError: '' });
 
@@ -95,7 +90,6 @@ class Update extends React.Component {
     }
 
     render() {
-
         let options = this.state.options.map((option, i) => {
             return (
                 <div key={i}>
@@ -106,9 +100,8 @@ class Update extends React.Component {
                         onChange={this.handleOptionChange.bind(this, i)}
                         errorText={this.state.options[i].optionError}
                         disabled={i < this.state.originalCount ? true : false}
-                        ref={`text${i}`}
                         autoFocus={i === this.state.originalCount ? true : false} //focus on the new element for better user experience
-                        />
+                    />
                 </div>
             );
         });
@@ -117,11 +110,11 @@ class Update extends React.Component {
             <div className="row">
                 <div className="col-sm-12 text-xs-center">
 
-                    <Helmet title={`Update ${this.state.title}`} />
+                    <Helmet title={`Update "${this.state.title}"`} />
 
                     <Paper>
                         <br /><br />
-                        <h2>{`Update ${this.state.title}`}</h2>
+                        <h2>{`Update "${this.state.title}"`}</h2>
 
                         <Loading loading={this.state.loading} />
 
@@ -130,10 +123,8 @@ class Update extends React.Component {
                             <TextField
                                 floatingLabelText="Title"
                                 value={this.state.title}
-                                onChange={this.handleTitleChange}
-                                errorText={this.state.titleError}
                                 disabled={true}
-                                />
+                            />
 
                             {options}
 
@@ -200,3 +191,4 @@ class Update extends React.Component {
 }
 
 export default Update;
+

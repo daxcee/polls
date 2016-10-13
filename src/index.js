@@ -13,6 +13,7 @@ import Recover from './components/Recover';
 import New from './components/New';
 import Poll from './components/Poll';
 import Update from './components/Update';
+import NotFound from './components/NotFound';
 
 import './index.css';
 
@@ -31,6 +32,7 @@ ReactDOM.render(
       <Route path="new" component={New} onEnter={requireAuth} />
       <Route path="update/:pollId" component={Update} onEnter={requireAuth} />
       <Route path="poll/:pollId" component={Poll} />
+      <Route path="*" component={NotFound} />
     </Route>
   </Router>,
   document.getElementById('root')

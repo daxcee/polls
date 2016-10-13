@@ -1,17 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router';
-import firebaseApp from '../utils/firebase';
+import { firebaseApp, getLocalUserId } from '../utils/firebase';
+import Helmet from "react-helmet";
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
-// import FontIcon from 'material-ui/FontIcon';
 import Dialog from 'material-ui/Dialog';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
-//import RefreshIndicator from 'material-ui/RefreshIndicator';
-import Helmet from "react-helmet";
-
 import Loading from './Loading';
 
 class Dashboard extends React.Component {
@@ -21,76 +18,80 @@ class Dashboard extends React.Component {
 
         this.state = {
             dialogOpen: false,
-            poll2Delete: '',
-            polls: [],
-            loading: true
+            loading: true,
+            polls: [] //items like { id: 34324, title: 'sdf'}
         };
 
+        this.poll2Delete = '';
+        this.poll2DeleteTitle = ''
+
         this.handleClose = this.handleClose.bind(this);
-        //this.handleOpen = this.handleOpen.bind(this); bind in ontapctouch call
         this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentWillMount() {
+        const uid = getLocalUserId();
 
-        let uid;
+        this.userPollsRef = firebaseApp.database().ref(`user-polls/${uid}`);
 
-        //this key exists if the user is logged in, when logged out is removed
-        //the user should be authoraized when seeing the dashboard
-        //use it to avoid waiting for firebaseApp.auth().onAuthStateChanged
-        for (let key in localStorage) {
-            if (key.startsWith('firebase:authUser:')) {
-                uid = JSON.parse(localStorage.getItem(key)).uid;
+        //check if user has no polls to quit loading indicator
+        this.userPollsRef.once('value').then(snapshot => {
+            if (!snapshot.hasChildren()) {
+                this.setState({ loading: false });
             }
-        }
+        });
 
-        const userPollsRef = firebaseApp.database().ref(`user-polls/${uid}`);
-        userPollsRef.on('value', ((userPollsSnapshot) => {
+        this.userPollsRef.on('child_added', ((newPollIdSnapshot) => {
+            const pollId = newPollIdSnapshot.key;
 
-            let polls = [];
-            let _this = this;
+            firebaseApp.database().ref(`polls/${pollId}/title`).once('value').then(snapshot => {
+                const title = snapshot.val();
 
-            //set here, cause if no polls remain after last delete, the pollRef wont get called
-            _this.setState({ polls: polls, loading: false });
+                const polls = this.state.polls;
+                polls.push({ title: title, id: pollId })
 
-            userPollsSnapshot.forEach((pollIdSnap) => {
-
-                const pollId = pollIdSnap.key;
-
-                const pollRef = firebaseApp.database().ref(`polls/${pollId}`);
-                pollRef.on('value', ((snapshot) => {
-
-                    //snapshop can be null after deleting
-                    if (snapshot.val()) {
-                        polls.push({ title: snapshot.val().title, id: pollId });
-                        _this.setState({ polls: polls });
-                    }
-
-                }));
-
+                this.setState({
+                    polls: polls,
+                    loading: false
+                });
             });
 
-        }));
+        })).bind(this);
+
+        this.userPollsRef.on('child_removed', ((removedPollIdSnapshot) => {
+            const pollId = removedPollIdSnapshot.key;
+            const polls = this.state.polls.filter(poll => poll.id !== pollId);
+
+            this.setState({
+                polls: polls
+            });
+
+        })).bind(this);
+    }
+
+    componentWillUnmount() {
+        this.userPollsRef.off();
     }
 
     handleOpen(pollId) {
-        this.setState({ dialogOpen: true, poll2Delete: pollId });
+        this.setState({ dialogOpen: true });
+        this.poll2Delete = pollId;
+        this.poll2DeleteTitle = this.state.polls.find(poll => poll.id === this.poll2Delete).title;
     }
 
     handleClose() {
-        this.setState({ dialogOpen: false, poll2Delete: '' });
+        this.setState({ dialogOpen: false });
     }
 
     handleDelete() {
-
-        // update to null to delete
-        var updates = {};
-        updates['/polls/' + this.state.poll2Delete] = null;
-        updates['/user-polls/' + firebaseApp.auth().currentUser.uid + '/' + this.state.poll2Delete] = null;
+        // updating to null deletes
+        const updates = {};
+        updates[`/polls/${this.poll2Delete}`] = null;
+        updates[`/user-polls/${firebaseApp.auth().currentUser.uid}/${this.poll2Delete}`] = null;
 
         firebaseApp.database().ref().update(updates);
 
-        this.setState({ dialogOpen: false, poll2Delete: '' });
+        this.setState({ dialogOpen: false });
     }
 
     render() {
@@ -98,7 +99,7 @@ class Dashboard extends React.Component {
         const actions = [
             <FlatButton
                 label="Cancel"
-                primary={true}
+                primary={false}
                 onTouchTap={this.handleClose}
                 />,
             <FlatButton
@@ -115,25 +116,22 @@ class Dashboard extends React.Component {
                     <IconButton
                         iconClassName="fa fa-trash"
                         tooltip={<span>Delete</span>}
-                        onTouchTap={() => this.handleOpen(poll.id) }
-                        
-                    />
+                        onTouchTap={() => this.handleOpen(poll.id)}
+
+                        />
                     <Link to={`/poll/${poll.id}`}>
-                    <FlatButton
-                        label={poll.title}
-                        className="pollDashboard"
-                        style={{textAlign: 'left', width: '50%'}}
-                    />
+                        <FlatButton
+                            label={poll.title}
+                            style={{ textAlign: 'left', width: '50%' }}
+                            />
                     </Link>
                     <Divider />
-                    
+
                 </div>
             );
         });
 
         return (
-
-
             <div className="row">
                 <div className="col-sm-12 text-xs-center">
 
@@ -141,31 +139,32 @@ class Dashboard extends React.Component {
 
                     <Paper>
 
-                    <br/>
-                    <h2>Your Polls</h2>
-                    <br />
+                        <br />
+                        <h2>Your Polls</h2>
+                        <br />
 
-                    
-                    <Dialog
-                        actions={actions}
-                        modal={false}
-                        open={this.state.dialogOpen}
-                        onRequestClose={this.handleClose}
-                    >
-                        Delete Poll?
+                        <Dialog
+                            actions={actions}
+                            modal={false}
+                            open={this.state.dialogOpen}
+                            onRequestClose={this.handleClose}
+                            >
+                            Delete "{this.poll2DeleteTitle}"?
                     </Dialog>
 
-                    <Link to="/new">
-                    <RaisedButton
-                        label="New Poll"
-                        primary={true}
-                        />
-                    </Link>
-                    {pollsUIs}
+                        <Link to="/new">
+                            <RaisedButton
+                                label="New Poll"
+                                primary={true}
+                                />
+                        </Link>
+                        <br /><br />
 
-                    <Loading loading={this.state.loading} />
+                        {pollsUIs}
 
-                    <br /><br />
+                        <Loading loading={this.state.loading} />
+
+                        <br /><br />
                     </Paper>
                 </div>
             </div>

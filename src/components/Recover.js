@@ -1,11 +1,10 @@
 import React from 'react';
-import firebaseApp from '../utils/firebase';
+import { firebaseApp } from '../utils/firebase';
+import Helmet from "react-helmet";
 
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
-import Helmet from "react-helmet";
-
 
 class Recover extends React.Component {
   constructor(props) {
@@ -31,59 +30,59 @@ class Recover extends React.Component {
     firebaseApp.auth().sendPasswordResetEmail(email).then(() => {
       this.setState({ currentStep: 2 });
     }).catch((error) => {
-    
-        this.setState({ emailError: error.message });
-        console.log(error);
+      this.setState({ emailError: error.message });
+      //console.log(error);
     });
   }
 
   render() {
 
-      let step = (
-          <form onSubmit={this.handleEmailSubmit}>
+    let step = (
+      <form onSubmit={this.handleEmailSubmit}>
 
-            <h2>We'll send you an email to reset your password.</h2>
+        <h2>We'll send you an email to reset your password.</h2>
 
-              <TextField
-                floatingLabelText="Email"
-                value={this.state.email}
-                onChange={this.handleEmailChange}
-                errorText={this.state.emailError}
-                />
+        <TextField
+          floatingLabelText="Email"
+          value={this.state.email}
+          onChange={this.handleEmailChange}
+          errorText={this.state.emailError}
+          />
 
-              <br /><br/>
-              <RaisedButton
-                label="Send Verification Email"
-                type="submit"
-                primary={true}
-                />
+        <br /><br />
+        <RaisedButton
+          label="Send Verification Email"
+          type="submit"
+          primary={true}
+          />
 
-            </form>
-      );
-    
+      </form>
+    );
+
     if (this.state.currentStep === 2) {
 
-        step = (
-          <p>Done! Follow the link in the email to change your password</p>
+      step = (
+        <h2>Done! Follow the link in the email to change your password.</h2>
       );
     }
 
     return (
-        <div className="row">
-          <div className="col-sm-12 text-xs-center">
+      <div className="row">
+        <div className="col-sm-12 text-xs-center">
 
-            <Helmet title="Reset yout password" /> 
+          <Helmet title="Reset yout password" />
 
-<Paper>
-           <br /><br />
+          <Paper>
+            <br /><br />
             {step}
             <br /><br />
-</Paper>
-          </div>
+          </Paper>
         </div>
+      </div>
     );
   }
 }
 
 
 export default Recover;
+

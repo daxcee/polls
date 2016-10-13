@@ -1,5 +1,5 @@
 import React from 'react';
-import firebaseApp from '../utils/firebase';
+import { firebaseApp } from '../utils/firebase';
 import { browserHistory } from 'react-router';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -33,7 +33,6 @@ class New extends React.Component {
     }
 
     handleOptionChange(i, e) {
-
         let options = this.state.options;
         options[i].option = e.target.value;
         this.setState({ options: options });
@@ -47,17 +46,17 @@ class New extends React.Component {
         }
 
         //pollData has the form
-        // const pollData = {
+        // {
         //     title: 'a title',
         //     'a poll option': 0,
         //     'a different poll option': 0
-        // };
+        // }
 
         const pollData = this.state.options.reduce((a, op) => {
             const key = op.option.trim();
             a[key] = 0;
             return a;
-        }, {title: this.state.title.trim()})
+        }, { title: this.state.title.trim() })
 
         //user ID
         const uid = firebaseApp.auth().currentUser.uid;
@@ -67,20 +66,19 @@ class New extends React.Component {
 
         // Write the new poll's data simultaneously in the polls list and the user's polls list.
         var updates = {};
-        updates['/polls/' + newPollKey] = pollData;
-        updates['/user-polls/' + uid + '/' + newPollKey] = true;
+        updates[`/polls/${newPollKey}`] = pollData;
+        updates[`/user-polls/${uid}/${newPollKey}`] = true;
 
         firebaseApp.database().ref().update(updates);
-    
+
         browserHistory.push(`/poll/${newPollKey}`);
     }
 
     handleAddOption() {
-
         let options = this.state.options;
         options.push({ option: '', optionError: '' });
 
-        this.setState({ options: options });
+        this.setState({ options }); //es6 shorthand for { options: options }
     }
 
     render() {
@@ -90,53 +88,53 @@ class New extends React.Component {
                 <div key={i}>
                     <br />
                     <TextField
-                        floatingLabelText={`Option ${i+1}`}
-                        value={this.state.options[i].option} 
+                        floatingLabelText={`Option ${i + 1}`}
+                        value={this.state.options[i].option}
                         onChange={this.handleOptionChange.bind(this, i)}
                         errorText={this.state.options[i].optionError}
-                   />
+                        />
                 </div>
             );
         });
 
         return (
             <div className="row">
-                <div className="col-sm-12 text-xs-center"> 
+                <div className="col-sm-12 text-xs-center">
 
-                    <Helmet title="New Poll" />     
+                    <Helmet title="New Poll" />
 
                     <Paper>
-                    <br /><br />
-                    <h3>New Poll</h3>
+                        <br /><br />
+                        <h2>New Poll</h2>
 
-                    <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.handleSubmit}>
 
-                        <TextField
-                            floatingLabelText="Title"
-                            value={this.state.title} 
-                            onChange={this.handleTitleChange}
-                            errorText={this.state.titleError}
-                        />
+                            <TextField
+                                floatingLabelText="Title"
+                                value={this.state.title}
+                                onChange={this.handleTitleChange}
+                                errorText={this.state.titleError}
+                                />
 
-                        {options}
+                            {options}
 
-                        <br />
-                        <FloatingActionButton 
-                            mini={true} 
-                            secondary={true} 
-                            onTouchTap={this.handleAddOption} >
-                            <ContentAdd />
-                        </FloatingActionButton>
+                            <br />
+                            <FloatingActionButton
+                                mini={true}
+                                secondary={true}
+                                onTouchTap={this.handleAddOption} >
+                                <ContentAdd />
+                            </FloatingActionButton>
 
-                        <br /><br/>
-                        <RaisedButton
-                            label="Create"
-                            type="submit"
-                            primary={true}
-                        />
-                    </form> 
+                            <br /><br />
+                            <RaisedButton
+                                label="Create"
+                                type="submit"
+                                primary={true}
+                                />
+                        </form>
 
-                    <br /><br />
+                        <br /><br />
                     </Paper>
                 </div>
             </div>
@@ -144,7 +142,7 @@ class New extends React.Component {
     }
 
     componentWillUnmount() {
-        
+
     }
 
     //firebase keys must be non-empty strings and can't contain ".", "#", "$", "/", "[", or "]"
@@ -155,7 +153,7 @@ class New extends React.Component {
 
         let isInvalid = false;
         const regex = /[\.#\$\/\[\]]/;
-        const title = this.state.title.trim(); 
+        const title = this.state.title.trim();
 
         if (title.length === 0) {
             this.setState({ titleError: 'Title must no be empty.' })
@@ -164,7 +162,7 @@ class New extends React.Component {
             this.setState({ titleError: `Title can't contain ".", "#", "$", "/", "[", or "]"` })
             isInvalid = true;
         } else {
-            this.setState({title: title, titleError: '' })
+            this.setState({ title: title, titleError: '' })
         }
 
         this.state.options.forEach((o, i) => {

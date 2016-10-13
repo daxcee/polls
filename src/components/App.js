@@ -1,6 +1,6 @@
 import React from 'react';
-import firebaseApp from '../utils/firebase';
 import { Link, browserHistory } from 'react-router';
+import { firebaseApp } from '../utils/firebase';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
@@ -27,7 +27,7 @@ class App extends React.Component {
 
     componentWillMount() {
         firebaseApp.auth().onAuthStateChanged(user => {
-       
+
             this.setState({
                 loggedIn: (null !== user) //user is null when not loggedin 
             })
@@ -36,7 +36,7 @@ class App extends React.Component {
 
     handleLogout() {
         firebaseApp.auth().signOut().then(() => {
-            console.log("sign out succesful");
+            //console.log("sign out succesful");
             browserHistory.push('/');
         }, (error) => {
             console.log(error);
@@ -53,58 +53,56 @@ class App extends React.Component {
 
                         <div className="col-sm-4">
                             <br />
-                            {this.state.loggedIn ? 
+                            {this.state.loggedIn ?
                                 <Link to="/dashboard">
-                                <FlatButton 
-                                    label="My Polls"
-                                    primary={true}
-                                />
+                                    <FlatButton
+                                        label="My Polls"
+                                        primary={true}
+                                        />
                                 </Link>
-                            : ''}
+                                : ''}
                             <br /><br />
                         </div>
 
                         <div className="col-sm-4 text-xs-center">
                             <br />
                             <Link to={this.state.loggedIn ? '/dashboard' : '/'} >
-                            <FlatButton 
-                                label="Poolster" 
-                                labelStyle={{ fontFamily:'Monoton', fontSize:"25px", textShadow:"2px 2px #ccc", color: "#DC3912" }} 
-                            />
+                                <FlatButton
+                                    label="Poolster"
+                                    labelStyle={{ fontFamily: 'Monoton', fontSize: "25px", textShadow: "2px 2px #ccc", color: "#DC3912" }}
+                                    />
                             </Link>
                             <br /><br />
                         </div>
-                        
+
                         <div className="col-sm-4 text-xs-right">
                             <br />
-                            {this.state.loggedIn ? 
-                            <FlatButton 
-                                onClick={this.handleLogout}
-                                label="Logout"
-                                secondary={true}
-                            />
-                            : '' }
+                            {this.state.loggedIn ?
+                                <FlatButton
+                                    onClick={this.handleLogout}
+                                    label="Logout"
+                                    secondary={true}
+                                    />
+                                : ''}
                             <br /><br />
                         </div>
-                        
+
                     </div>
 
                     {this.props.children}
-                    
+
                     <div className="row">
-                        <div className="col-sm-12 text-xs-center">    
-
-                        <br />
-
+                        <div className="col-sm-12 text-xs-center">
+                            <br />
                             <a href="https://github.com/sebnun/polls">
-                            <FlatButton
-                                label="Source Code"
-                                icon={<FontIcon className="fa fa-github" />}
-                            />
+                                <FlatButton
+                                    label="Source Code"
+                                    icon={<FontIcon className="fa fa-github" />}
+                                    />
                             </a>
                         </div>
                     </div>
-                    
+
                 </div>
             </MuiThemeProvider>
 
