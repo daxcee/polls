@@ -6,8 +6,11 @@ import Snackbar from 'material-ui/Snackbar';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
-import { PieChart, Pie, Tooltip } from 'recharts';
+import { Chart } from 'react-google-charts';
+
 import Helmet from "react-helmet";
+
+import Loading from './Loading';
 
 class Poll extends React.Component {
     constructor(props) {
@@ -17,7 +20,8 @@ class Poll extends React.Component {
             title: '',
             options: [], //of the form [{'some option': 34}]
             voted: localStorage.getItem(this.props.params.pollId) ? true : false,
-            showSnackbar: false
+            showSnackbar: false,
+            loading: true
         };
 
         //this.handleVote = this.handleVote
@@ -25,21 +29,21 @@ class Poll extends React.Component {
 
     componentWillMount() {
         const pollRef = firebaseApp.database().ref(`polls/${this.props.params.pollId}`);
-		
+
         pollRef.on('value', ((snapshot) => {
 
             const _this = this;
             const dbPoll = snapshot.val();
-            
+
             const options = Object.keys(dbPoll).reduce((a, key) => {
 
-                if(key !== 'title') {
+                if (key !== 'title') {
                     a.push({ [key]: dbPoll[key] }); //[key]is es6 computed property name
                 }
                 return a;
-            }, [] );
+            }, []);
 
-            _this.setState({ title: dbPoll.title, options: options})
+            _this.setState({ title: dbPoll.title, options: options, loading: false })
         }));
     }
 
@@ -64,32 +68,36 @@ class Poll extends React.Component {
 
         let addOptionUI;
         if (isAuthUser) {
-            addOptionUI =  (    
-                <div>               
-                    <FloatingActionButton 
-                        mini={true} 
-                        secondary={true} 
-                        href={`/update/${this.props.params.pollId}`}
-                         >
-                         <ContentAdd />
-                    </FloatingActionButton>
+            addOptionUI = (
+                <div>
+                    <a href={`/update/${this.props.params.pollId}`} >
+                        <FloatingActionButton
+                            mini={true}
+                            secondary={true}
+                            >
+                            <ContentAdd />
+                        </FloatingActionButton>
+                    </a>
                 </div>
             );
         }
 
-        //const data = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300}];
-       const data = this.state.options.map(option => {
-           return { name: Object.keys(option)[0], value: option[Object.keys(option)[0]] }
-       });
+        //[["Task","Hours per Day"],["Work",11],["Eat",2],["Commute",2],["Watch TV",2],["Sleep",7]]
+        const data = this.state.options.map(option => {
+            return [Object.keys(option)[0], option[Object.keys(option)[0]]];
+        });
+
+        data.unshift(['option', 'votes']);
 
         let optionsUI = this.state.options.map(option => {
             return (
                 <div key={Object.keys(option)[0]}>
-                    <RaisedButton 
-                        label={Object.keys(option)[0] + ' ' + option[Object.keys(option)[0]]} 
-                        fullWidth={true} 
+                    <RaisedButton
+                        label={Object.keys(option)[0] + ' ' + option[Object.keys(option)[0]]}
+                        fullWidth={true}
                         onTouchTap={() => this.handleVote(Object.keys(option)[0])}
                         disabled={this.state.voted}
+                        style={{ width: 300, paddingLeft: 20, paddingRight: 20 }}
                     />
                     <br /><br />
                 </div>
@@ -100,27 +108,38 @@ class Poll extends React.Component {
             <div className="row">
                 <div className="col-sm-12 text-xs-center">
 
-                    <Helmet title={this.state.title} /> 
+                    <Helmet title={this.state.title} />
 
                     <Snackbar
                         open={this.state.showSnackbar}
                         message="Thanks for your vote!"
                         autoHideDuration={4000}
-                    />
-<Paper>
-<br /><br />
-                    <h2>{this.state.title}</h2>
+                        />
+                    <Paper>
+                        <br /><br />
+                        <h2>{this.state.title}</h2>
+                        <br />
 
-                    {optionsUI}
+                        <Loading loading={this.state.loading} />
 
-                    {addOptionUI}
 
-                    <PieChart width={800} height={400}>
-                        <Pie isAnimationActive={false} data={data} cx={200} cy={200} outerRadius={80} fill="#8884d8" label/>
-                        <Tooltip/>
-                    </PieChart>
+                        {optionsUI}
 
-                    <br /><br />
+                        {addOptionUI}
+
+                        <br />
+                        <Chart
+                            chartTitle="DonutChart"
+                            chartType="PieChart"
+                            width="100%"
+                            data={data}
+                            options={{ is3D: 'true' }}
+                            />
+
+
+
+                        <br /><br />
+
                     </Paper>
                 </div>
             </div>

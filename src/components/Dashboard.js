@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import firebaseApp from '../utils/firebase';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -10,6 +11,8 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 //import RefreshIndicator from 'material-ui/RefreshIndicator';
 import Helmet from "react-helmet";
+
+import Loading from './Loading';
 
 class Dashboard extends React.Component {
 
@@ -115,12 +118,13 @@ class Dashboard extends React.Component {
                         onTouchTap={() => this.handleOpen(poll.id) }
                         
                     />
+                    <Link to={`/poll/${poll.id}`}>
                     <FlatButton
                         label={poll.title}
-                        href={`/poll/${poll.id}`}
                         className="pollDashboard"
                         style={{textAlign: 'left', width: '50%'}}
                     />
+                    </Link>
                     <Divider />
                     
                 </div>
@@ -140,6 +144,7 @@ class Dashboard extends React.Component {
                     <br/>
                     <h2>Your Polls</h2>
                     <br />
+
                     
                     <Dialog
                         actions={actions}
@@ -150,17 +155,17 @@ class Dashboard extends React.Component {
                         Delete Poll?
                     </Dialog>
 
-
+                    <Link to="/new">
                     <RaisedButton
                         label="New Poll"
-                        href="/new"
                         primary={true}
                         />
-
-                    { this.state.loading ? <p>Loading ...</p> : '' }
-
+                    </Link>
                     {pollsUIs}
 
+                    <Loading loading={this.state.loading} />
+
+                    <br /><br />
                     </Paper>
                 </div>
             </div>

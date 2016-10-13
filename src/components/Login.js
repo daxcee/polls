@@ -1,6 +1,6 @@
 import React from 'react';
 import firebaseApp from '../utils/firebase';
-import { browserHistory } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -89,10 +89,11 @@ class Login extends React.Component {
             </form>
 
             <br />
+            <Link to="/recover">
             <FlatButton
               label="Forgot your password?"
-              href="/recover"
               />
+              </Link>
               <br /><br />
               </Paper>
           </div>

@@ -9,6 +9,8 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import Paper from 'material-ui/Paper';
 import Helmet from "react-helmet";
 
+import Loading from './Loading';
+
 class Update extends React.Component {
     constructor(props) {
         super(props);
@@ -16,7 +18,8 @@ class Update extends React.Component {
         this.state = {
             title: '',
             options: [],
-            originalCount: 0
+            originalCount: 0,
+            loading: true
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -43,7 +46,7 @@ class Update extends React.Component {
             //to start with a new option
             options.push({ option: '', optionError: '' });
 
-            _this.setState({ title: dbPoll.title, options: options, originalCount: options.length - 1 })
+            _this.setState({ title: dbPoll.title, options: options, originalCount: options.length - 1, loading: false })
 
         }));
 
@@ -103,6 +106,8 @@ class Update extends React.Component {
                         onChange={this.handleOptionChange.bind(this, i)}
                         errorText={this.state.options[i].optionError}
                         disabled={i < this.state.originalCount ? true : false}
+                        ref={`text${i}`}
+                        autoFocus={i === this.state.originalCount ? true : false} //focus on the new element for better user experience
                         />
                 </div>
             );
@@ -112,41 +117,43 @@ class Update extends React.Component {
             <div className="row">
                 <div className="col-sm-12 text-xs-center">
 
-                    <Helmet title={`Update ${this.state.title}`} /> 
+                    <Helmet title={`Update ${this.state.title}`} />
 
-<Paper>
-<br /><br />
-                    <h2>{`Update ${this.state.title}`}</h2>
-
-                    <form onSubmit={this.handleSubmit}>
-
-                        <TextField
-                            floatingLabelText="Title"
-                            value={this.state.title}
-                            onChange={this.handleTitleChange}
-                            errorText={this.state.titleError}
-                            disabled={true}
-                            />
-
-                        {options}
-
-                        <br />
-                        <FloatingActionButton
-                            mini={true}
-                            secondary={true}
-                            onTouchTap={this.handleAddOption} >
-                            <ContentAdd />
-                        </FloatingActionButton>
-
+                    <Paper>
                         <br /><br />
-                        <RaisedButton
-                            label="Update"
-                            type="submit"
-                            primary={true}
-                            />
-                    </form>
-                    <br /><br />
-</Paper>
+                        <h2>{`Update ${this.state.title}`}</h2>
+
+                        <Loading loading={this.state.loading} />
+
+                        <form onSubmit={this.handleSubmit}>
+
+                            <TextField
+                                floatingLabelText="Title"
+                                value={this.state.title}
+                                onChange={this.handleTitleChange}
+                                errorText={this.state.titleError}
+                                disabled={true}
+                                />
+
+                            {options}
+
+                            <br />
+                            <FloatingActionButton
+                                mini={true}
+                                secondary={true}
+                                onTouchTap={this.handleAddOption} >
+                                <ContentAdd />
+                            </FloatingActionButton>
+
+                            <br /><br />
+                            <RaisedButton
+                                label="Update"
+                                type="submit"
+                                primary={true}
+                                />
+                        </form>
+                        <br /><br />
+                    </Paper>
                 </div>
             </div>
         );

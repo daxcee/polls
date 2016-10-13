@@ -143,6 +143,10 @@ class New extends React.Component {
         );
     }
 
+    componentWillUnmount() {
+        
+    }
+
     //firebase keys must be non-empty strings and can't contain ".", "#", "$", "/", "[", or "]"
     //option must not be named "title", TODO: better data structure in firebase
     //options must be different, firebase removes dups keys automatically

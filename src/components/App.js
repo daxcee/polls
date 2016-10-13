@@ -1,40 +1,17 @@
 import React from 'react';
 import firebaseApp from '../utils/firebase';
-import { browserHistory } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-
-// const muiTheme = getMuiTheme({
-//     fontFamily: 'Roboto, sans-serif',
-//     palette: {
-//         primary1Color: lightBlue700,
-//         primary2Color: lightBlue800,
-//         primary3Color: lightBlue900,
-//         textColor: darkBlack,
-//         accent1Color: '#6C6D6E',
-//         accent2Color: yellowA700,
-//         accentYellow: yellowA700,
-//         accentOrange: orangeA400,
-//         canvasColor: blueGrey50,
-//         titleColor: lightBlue100,
-//         iconColor: '#6C6D6E',
-//         white: '#FFFFFF'
-//     },
-//     toolbar: {
-//         iconColor: darkBlack,
-//         backgroundColor: 'transparent'
-//     }
-// });
-
 const muiTheme = getMuiTheme({
     fontFamily: 'Roboto, sans-serif',
     palette: {
-        primary1Color: '#DF696E',
-        accent1Color: '#EE6E73'
+        primary1Color: '#DC3912',
+        accent1Color: '#FF9900'
     }
 });
 
@@ -77,22 +54,24 @@ class App extends React.Component {
                         <div className="col-sm-4">
                             <br />
                             {this.state.loggedIn ? 
+                                <Link to="/dashboard">
                                 <FlatButton 
                                     label="My Polls"
-                                    href="/dashboard"
                                     primary={true}
-                                /> 
+                                />
+                                </Link>
                             : ''}
                             <br /><br />
                         </div>
 
                         <div className="col-sm-4 text-xs-center">
                             <br />
+                            <Link to={this.state.loggedIn ? '/dashboard' : '/'} >
                             <FlatButton 
                                 label="Poolster" 
-                                href={this.state.loggedIn ? '/dashboard' : '/'} 
-                                labelStyle={{ fontFamily:'Monoton', fontSize:"25px", textShadow:"2px 2px #ccc", color: "#DF696E" }} 
+                                labelStyle={{ fontFamily:'Monoton', fontSize:"25px", textShadow:"2px 2px #ccc", color: "#DC3912" }} 
                             />
+                            </Link>
                             <br /><br />
                         </div>
                         
@@ -117,11 +96,12 @@ class App extends React.Component {
 
                         <br />
 
+                            <a href="https://github.com/sebnun/polls">
                             <FlatButton
                                 label="Source Code"
-                                href="https://github.com/sebnun/polls"
                                 icon={<FontIcon className="fa fa-github" />}
                             />
+                            </a>
                         </div>
                     </div>
                     

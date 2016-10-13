@@ -1,7 +1,7 @@
 import React from 'react';
 import firebaseApp from '../utils/firebase';
 import * as firebase from 'firebase'; //needed for fb, google providers
-import { browserHistory } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -68,21 +68,22 @@ class Home extends React.Component {
                 />
 
               <br /><br/>
+              <Link to="/login">
               <RaisedButton
                 label="Login with Email"
-                href="/login"
                 secondary={true}
                 icon={<FontIcon className="fa fa-envelope-o" />}
                 className="buttonWidth"
                 />
-
+                </Link>
               <br /><br/>
+              <Link to="/signup">
               <RaisedButton
                 label="Sign Up"
-                href="/signup"
                 primary={true}
                 className="buttonWidth"
                 />
+                </Link>
                 <br /><br/>
                 <br /><br/>
             </Paper>
