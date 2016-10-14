@@ -54,7 +54,7 @@ class App extends React.Component {
                         <div className="col-sm-4">
                             <br />
                             {this.state.loggedIn ?
-                                <Link to="/dashboard">
+                                <Link to="dashboard">
                                     <FlatButton
                                         label="My Polls"
                                         primary={true}
@@ -66,7 +66,7 @@ class App extends React.Component {
 
                         <div className="col-sm-4 text-xs-center">
                             <br />
-                            <Link to={this.state.loggedIn ? '/dashboard' : '/'} >
+                            <Link to={this.state.loggedIn ? 'dashboard' : '/'} >
                                 <FlatButton
                                     label="Poolster"
                                     labelStyle={{ fontFamily: 'Monoton', fontSize: "25px", textShadow: "2px 2px #ccc", color: "#DC3912" }}

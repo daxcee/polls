@@ -119,7 +119,7 @@ class Dashboard extends React.Component {
                         onTouchTap={() => this.handleOpen(poll.id)}
 
                         />
-                    <Link to={`/poll/${poll.id}`}>
+                    <Link to={`poll/${poll.id}`}>
                         <FlatButton
                             label={poll.title}
                             style={{ textAlign: 'left', width: '50%' }}
@@ -152,7 +152,7 @@ class Dashboard extends React.Component {
                             Delete "{this.poll2DeleteTitle}"?
                     </Dialog>
 
-                        <Link to="/new">
+                        <Link to="new">
                             <RaisedButton
                                 label="New Poll"
                                 primary={true}

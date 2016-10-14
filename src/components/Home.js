@@ -63,7 +63,7 @@ class Home extends React.Component {
               />
 
             <br /><br />
-            <Link to="/login">
+            <Link to="login">
               <RaisedButton
                 label="Login with Email"
                 secondary={true}
@@ -72,7 +72,7 @@ class Home extends React.Component {
                 />
             </Link>
             <br /><br />
-            <Link to="/signup">
+            <Link to="signup">
               <RaisedButton
                 label="Sign Up"
                 primary={true}
