@@ -79,7 +79,7 @@ class Update extends React.Component {
 
         firebaseApp.database().ref().update(updates);
 
-        browserHistory.push(`/poll/${this.props.params.pollId}`);
+        browserHistory.push(`/polls/poll/${this.props.params.pollId}`);
     }
 
     handleAddOption() {

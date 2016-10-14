@@ -23,16 +23,16 @@ injectTapEventPlugin();
 
 ReactDOM.render(
   <Router history={browserHistory}>
-    <Route path='/' component={App}> 
+    <Route path='/polls/' component={App}> 
       <IndexRoute component={Home} />
-      <Route path="dashboard" component={Dashboard} onEnter={requireAuth} /> 
-      <Route path="signup" component={Signup} />
-      <Route path="login" component={Login} />
-      <Route path="recover" component={Recover} />
-      <Route path="new" component={New} onEnter={requireAuth} />
-      <Route path="update/:pollId" component={Update} onEnter={requireAuth} />
-      <Route path="poll/:pollId" component={Poll} />
-      <Route path="*" component={NotFound} />
+      <Route path="/polls/dashboard" component={Dashboard} onEnter={requireAuth} /> 
+      <Route path="/polls/signup" component={Signup} />
+      <Route path="/polls/login" component={Login} />
+      <Route path="/polls/recover" component={Recover} />
+      <Route path="/polls/new" component={New} onEnter={requireAuth} />
+      <Route path="/polls/update/:pollId" component={Update} onEnter={requireAuth} />
+      <Route path="/polls/poll/:pollId" component={Poll} />
+      <Route path="/polls/*" component={NotFound} />
     </Route>
   </Router>,
   document.getElementById('root')

@@ -66,7 +66,7 @@ class Poll extends React.Component {
         if (isAuthUser) {
             addOptionUI = (
                 <div>
-                    <a href={`/update/${this.props.params.pollId}`} >
+                    <a href={`/polls/update/${this.props.params.pollId}`} >
                         <FloatingActionButton
                             mini={true}
                             secondary={true}

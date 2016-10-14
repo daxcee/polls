@@ -15,7 +15,7 @@ class Home extends React.Component {
     const provider = new firebase.auth.FacebookAuthProvider();
     firebaseApp.auth().signInWithPopup(provider).then((result) => {
       //console.log('Facebook login success');
-      browserHistory.push('/dashboard');
+      browserHistory.push('/polls/dashboard');
     }).catch((error) => {
       console.log(error);
     });
@@ -26,7 +26,7 @@ class Home extends React.Component {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebaseApp.auth().signInWithPopup(provider).then((result) => {
       //console.log('Google login success');
-      browserHistory.push('/dashboard');
+      browserHistory.push('/polls/dashboard');
     }).catch((error) => {
       console.log(error);
     });
@@ -63,7 +63,7 @@ class Home extends React.Component {
               />
 
             <br /><br />
-            <Link to="login">
+            <Link to="/polls/login">
               <RaisedButton
                 label="Login with Email"
                 secondary={true}
@@ -72,7 +72,7 @@ class Home extends React.Component {
                 />
             </Link>
             <br /><br />
-            <Link to="signup">
+            <Link to="/polls/signup">
               <RaisedButton
                 label="Sign Up"
                 primary={true}

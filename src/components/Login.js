@@ -38,7 +38,7 @@ class Login extends React.Component {
     const password = this.state.password.trim();
 
     firebaseApp.auth().signInWithEmailAndPassword(email, password).then((user) => {
-      browserHistory.push('/dashboard');
+      browserHistory.push('/polls/dashboard');
     }).catch((error) => {
 
       if (error.code === 'auth/wrong-password') {
@@ -92,7 +92,7 @@ class Login extends React.Component {
             </form>
 
             <br />
-            <Link to="recover">
+            <Link to="/polls/recover">
               <FlatButton
                 label="Forgot your password?"
                 />

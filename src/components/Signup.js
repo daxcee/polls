@@ -37,7 +37,7 @@ class Signup extends React.Component {
     const password = this.state.password.trim();
 
     firebaseApp.auth().createUserWithEmailAndPassword(email, password).then((user) => {
-      browserHistory.push('/dashboard');
+      browserHistory.push('/polls/dashboard');
     }).catch((error) => {
       if (error.code === 'auth/weak-password') {
         this.setState({ passwordError: error.message, emailError: '' });

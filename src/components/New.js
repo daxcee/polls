@@ -71,7 +71,7 @@ class New extends React.Component {
 
         firebaseApp.database().ref().update(updates);
 
-        browserHistory.push(`/poll/${newPollKey}`);
+        browserHistory.push(`/polls/poll/${newPollKey}`);
     }
 
     handleAddOption() {
