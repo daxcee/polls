@@ -51,7 +51,18 @@ class App extends React.Component {
 
                     <div className="row">
 
-                        <div className="col-sm-4">
+                        <div className="col-sm-12 text-xs-center">
+                        <br /><br />
+                            <a style={{ fontFamily: 'Monoton', fontSize: "50px", textShadow: "2px 2px #ccc", color: "#DC3912", textDecoration: 'none' }} href={this.state.loggedIn ? '/polls/dashboard' : '/polls/'} >
+                                Poolster
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <div className="row">
+
+                        <div className="col-sm-6 text-xs-left">
                             <br />
                             {this.state.loggedIn ?
                                 <Link to="/polls/dashboard">
@@ -64,18 +75,7 @@ class App extends React.Component {
                             <br /><br />
                         </div>
 
-                        <div className="col-sm-4 text-xs-center">
-                            <br />
-                            <Link to={this.state.loggedIn ? '/polls/dashboard' : '/polls/'} >
-                                <FlatButton
-                                    label="Poolster"
-                                    labelStyle={{ fontFamily: 'Monoton', fontSize: "25px", textShadow: "2px 2px #ccc", color: "#DC3912" }}
-                                    />
-                            </Link>
-                            <br /><br />
-                        </div>
-
-                        <div className="col-sm-4 text-xs-right">
+                        <div className="col-sm-6 text-xs-right">
                             <br />
                             {this.state.loggedIn ?
                                 <FlatButton
@@ -86,7 +86,7 @@ class App extends React.Component {
                                 : ''}
                             <br /><br />
                         </div>
-
+                        
                     </div>
 
                     {this.props.children}
