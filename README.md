@@ -16,3 +16,5 @@ React voting web app with firebase backend
 ## Demo
 
 https://sebnun.github.io/polls/
+
+username: `a@a.com` password: `123456`
