@@ -1,5 +1,5 @@
 import React from 'react';
-import { firebaseApp, getLocalUserId } from '../utils/firebase';
+import { firebaseApp } from '../utils/firebase';
 import Helmet from "react-helmet";
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -60,7 +60,8 @@ class Poll extends React.Component {
         });
         data.unshift(['option', 'votes']);
 
-        let isAuthUser = getLocalUserId() ? true : false;
+        //let isAuthUser = getLocalUserId() ? true : false;
+        let isAuthUser = firebaseApp.auth().currentUser ? true : false;
 
         let addOptionUI;
         if (isAuthUser) {

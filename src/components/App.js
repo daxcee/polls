@@ -27,7 +27,6 @@ class App extends React.Component {
 
     componentWillMount() {
         firebaseApp.auth().onAuthStateChanged(user => {
-
             this.setState({
                 loggedIn: (null !== user) //user is null when not loggedin 
             })
@@ -51,17 +50,6 @@ class App extends React.Component {
 
                     <div className="row">
 
-                        <div className="col-sm-12 text-xs-center">
-                        <br /><br />
-                            <a style={{ fontFamily: 'Monoton', fontSize: "50px", textShadow: "2px 2px #ccc", color: "#DC3912", textDecoration: 'none' }} href={this.state.loggedIn ? '/polls/dashboard' : '/polls/'} >
-                                Poolster
-                            </a>
-                        </div>
-
-                    </div>
-
-                    <div className="row">
-
                         <div className="col-sm-6 text-xs-left">
                             <br />
                             {this.state.loggedIn ?
@@ -72,7 +60,6 @@ class App extends React.Component {
                                         />
                                 </Link>
                                 : ''}
-                            <br /><br />
                         </div>
 
                         <div className="col-sm-6 text-xs-right">
@@ -84,9 +71,19 @@ class App extends React.Component {
                                     secondary={true}
                                     />
                                 : ''}
+                        </div>
+
+                    </div>
+
+                    <div className="row">
+
+                        <div className="col-sm-12 text-xs-center">
+                            <a style={{ fontFamily: 'Monoton', fontSize: "60px", textShadow: "2px 2px #ccc", color: "#DC3912", textDecoration: 'none' }} href={this.state.loggedIn ? '/polls/dashboard' : '/polls/'} >
+                                Poolster
+                            </a>
                             <br /><br />
                         </div>
-                        
+
                     </div>
 
                     {this.props.children}

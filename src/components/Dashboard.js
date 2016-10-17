@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import { firebaseApp, getLocalUserId } from '../utils/firebase';
+import { firebaseApp } from '../utils/firebase';
 import Helmet from "react-helmet";
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -30,47 +30,63 @@ class Dashboard extends React.Component {
     }
 
     componentWillMount() {
-        const uid = getLocalUserId();
+        //const uid = getLocalUserId();
 
-        this.userPollsRef = firebaseApp.database().ref(`user-polls/${uid}`);
+        firebaseApp.auth().onAuthStateChanged(user => {
+            if (user) { //this can get called after componentWillUnmount, make sure its there to avoid errors
 
-        //check if user has no polls to quit loading indicator
-        this.userPollsRef.once('value').then(snapshot => {
-            if (!snapshot.hasChildren()) {
-                this.setState({ loading: false });
+                const uid = user.uid;
+
+                this.userPollsRef = firebaseApp.database().ref(`user-polls/${uid}`);
+
+                //check if user has no polls to quit loading indicator
+                this.userPollsRef.once('value').then(snapshot => {
+                    if (!snapshot.hasChildren()) {
+                        if (this.mounted) {
+                            this.setState({ loading: false });
+                        }
+                    }
+                });
+
+                this.userPollsRef.on('child_added', ((newPollIdSnapshot) => {
+                    const pollId = newPollIdSnapshot.key;
+
+                    firebaseApp.database().ref(`polls/${pollId}/title`).once('value').then(snapshot => {
+                        const title = snapshot.val();
+
+                        const polls = this.state.polls;
+                        polls.push({ title: title, id: pollId })
+
+                        if (this.mounted) {
+                            this.setState({
+                                polls: polls,
+                                loading: false
+                            });
+                        }
+                    });
+
+                })).bind(this);
+
+                this.userPollsRef.on('child_removed', ((removedPollIdSnapshot) => {
+                    const pollId = removedPollIdSnapshot.key;
+                    const polls = this.state.polls.filter(poll => poll.id !== pollId);
+
+                    if (this.mounted) {
+                        this.setState({
+                            polls: polls
+                        });
+                    }
+
+                })).bind(this);
             }
         });
 
-        this.userPollsRef.on('child_added', ((newPollIdSnapshot) => {
-            const pollId = newPollIdSnapshot.key;
-
-            firebaseApp.database().ref(`polls/${pollId}/title`).once('value').then(snapshot => {
-                const title = snapshot.val();
-
-                const polls = this.state.polls;
-                polls.push({ title: title, id: pollId })
-
-                this.setState({
-                    polls: polls,
-                    loading: false
-                });
-            });
-
-        })).bind(this);
-
-        this.userPollsRef.on('child_removed', ((removedPollIdSnapshot) => {
-            const pollId = removedPollIdSnapshot.key;
-            const polls = this.state.polls.filter(poll => poll.id !== pollId);
-
-            this.setState({
-                polls: polls
-            });
-
-        })).bind(this);
+        this.mounted = true; //the callbacks above can be called after componentWillUnmount(), to avoid errors, check
     }
 
     componentWillUnmount() {
         this.userPollsRef.off();
+        this.mounted = false;
     }
 
     handleOpen(pollId) {
