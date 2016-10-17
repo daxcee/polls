@@ -1,6 +1,6 @@
 # polls
 
-React voting web app with firebase backend
+React real-time voting app with Firebase backend.
 
 ## Use cases
 
